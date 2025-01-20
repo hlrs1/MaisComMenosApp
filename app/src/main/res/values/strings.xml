@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">MaisComMenosApp</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login_mercadinho">LoginMercadinho</string>
+    <string name="title_activity_registro_ong">RegistroOng</string>
+    <string name="title_activity_login_ong">LoginOng</string>
+    <string name="title_activity_produtos_index">ProdutosIndex</string>
+    <string name="title_activity_bottom_nav_item">BottomNavItem</string>
+    <string name="title_activity_bottom_nav_bar">BottomNavBar</string>
+    <string name="title_activity_main_nav_host">MainNavHost</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_home_page">HomePage</string>
+    <string name="title_activity_index_page_mercadinho">IndexPageMercadinho</string>
 </resources>
