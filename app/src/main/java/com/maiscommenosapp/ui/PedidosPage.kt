@@ -14,7 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -27,12 +27,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.maiscommenosapp.model.MainViewModel
+import com.maiscommenosapp.model.Pedido
+
 
 @Preview(showBackground = true)
 @Composable
-fun PedidosPage(modifier: Modifier = Modifier) {
+fun PedidosPage(modifier: Modifier = Modifier, viewModel: MainViewModel) {
 
-    val pedidoList = remember { getPedido().toMutableStateList() }
+    val pedidoList = viewModel.pedidos
     val activity = LocalContext.current as? Activity
     LazyColumn(
         modifier = modifier
@@ -40,9 +43,7 @@ fun PedidosPage(modifier: Modifier = Modifier) {
             .padding(8.dp)
     ) {
         items(pedidoList) { pedido ->
-            PedidoItem(pedido = pedido, onClose = {
-/* TO DO */
-
+            PedidoItem(pedido = pedido, onClose = { viewModel.remove(pedido)
                 Toast.makeText(activity, "Fechou!", Toast.LENGTH_LONG).show()
             }, onClick = {
 /* TO DO */Toast.makeText(activity, "Clicou!", Toast.LENGTH_LONG).show()
@@ -51,15 +52,6 @@ fun PedidosPage(modifier: Modifier = Modifier) {
     }
 }
 
-data class Pedido (
-    val name : String,
-    val quantidade: String? = null,
-    val preco: String? = null
-)
-
-private fun getPedido() = List(20) { i ->
-    Pedido(name = "Arroz $i", quantidade = "10", preco = "18,00")
-}
 
 @Composable
 fun PedidoItem(
@@ -73,7 +65,7 @@ fun PedidoItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            Icons.Rounded.FavoriteBorder,
+            Icons.Rounded.Info,
             contentDescription = ""
         )
         Spacer(modifier = Modifier.size(12.dp))
