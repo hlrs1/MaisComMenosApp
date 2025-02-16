@@ -20,16 +20,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Dialog
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun ProdutoDialog(onDismiss: () -> Unit, onConfirm: (produto: String) -> Unit) {
+fun ProdutoDialog(onDismiss: () -> Unit, onConfirm: (nome: String, quantidade: Int, preco: Double) -> Unit) {
     val produtoName = remember { mutableStateOf("") }
-    val produtoQuantidade = remember { mutableStateOf("") }
-    val produtoPreco = remember { mutableStateOf("") }
+    val produtoQuantidade = remember { mutableIntStateOf(0) }
+    val produtoPreco = remember { mutableDoubleStateOf(0.0) }
     Dialog(onDismissRequest = { onDismiss() } ) {
         Surface( shape = RoundedCornerShape(16.dp) ) {
             Column(modifier = Modifier.padding(20.dp)) {
@@ -54,16 +56,16 @@ fun ProdutoDialog(onDismiss: () -> Unit, onConfirm: (produto: String) -> Unit) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text(text = "Quantidade") },
-                    value = produtoQuantidade.value,
-                    onValueChange = { produtoQuantidade.value = it })
+                    value = produtoQuantidade.intValue.toString(),
+                    onValueChange = { produtoQuantidade.intValue = it.toInt() })
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text(text = "Preço do produto") },
-                    value = produtoPreco.value,
-                    onValueChange = { produtoPreco.value = it })
+                    value = produtoPreco.doubleValue.toString(),
+                    onValueChange = { produtoPreco.doubleValue = it.toDouble() })
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    onClick = { onConfirm(produtoName.value) },
+                    onClick = { onConfirm(produtoName.value, produtoQuantidade.intValue, produtoPreco.doubleValue) },
                     modifier = Modifier.fillMaxWidth().height(50.dp)
                 ) { Text(text = "OK") }
             }

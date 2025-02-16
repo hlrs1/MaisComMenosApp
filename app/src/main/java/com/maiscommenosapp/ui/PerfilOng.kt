@@ -32,25 +32,25 @@ import com.maiscommenosapp.model.User
 
 @Preview(showBackground = true)
 @Composable
-fun PerfilMercadinho(modifier: Modifier = Modifier, viewModel: MainViewModel) {
+fun PerfilOng(modifier: Modifier = Modifier, viewModel: MainViewModel) {
 
-    val mercadinho = viewModel.user
+    val ong = viewModel.user
     val activity = LocalContext.current as? Activity
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        if (mercadinho != null) {
+        if (ong != null) {
             Text(
-                text = ("Nome: " + mercadinho.name),
+                text = ("Nome: " + ong.name),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
             )
         }
-        if (mercadinho != null) {
+        if (ong != null) {
             Text(
-                text = ("Email: " + mercadinho.email),
+                text = ("Email: " + ong.email),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
             )

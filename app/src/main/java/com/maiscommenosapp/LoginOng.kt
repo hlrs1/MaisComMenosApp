@@ -2,6 +2,7 @@ package com.maiscommenosapp
 
 import android.app.Activity
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
 import android.widget.Toast
@@ -29,14 +30,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.maiscommenosapp.ui.IndexPageMercadinho
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.maiscommenosapp.ui.IndexPageOng
 import com.maiscommenosapp.ui.theme.MaisComMenosAppTheme
 
@@ -59,7 +60,7 @@ class LoginOng : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun LoginOngPage(modifier: Modifier = Modifier) {
-    var login by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val activity = LocalContext.current as? Activity
     Column(
@@ -67,6 +68,11 @@ fun LoginOngPage(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = CenterHorizontally,
     ) {
+        Text(
+            text = "ONG",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.SemiBold,
+        )
         Text(
             text = "MaisComMenosApp",
             fontSize = 24.sp,
@@ -78,10 +84,10 @@ fun LoginOngPage(modifier: Modifier = Modifier) {
         )
 
         OutlinedTextField(
-            value = login,
-            label = { Text(text = "Digite seu login") },
+            value = email,
+            label = { Text(text = "Digite seu email") },
             modifier = modifier.fillMaxWidth(),
-            onValueChange = { login = it }
+            onValueChange = { email = it }
         )
         OutlinedTextField(
             value = password,
@@ -92,14 +98,22 @@ fun LoginOngPage(modifier: Modifier = Modifier) {
         )
         Row(modifier = modifier) {
             Button(
-                onClick = {activity?.startActivity(
-                    Intent(activity, IndexPageOng::class.java).setFlags(
-                        FLAG_ACTIVITY_SINGLE_TOP
-                    )
-                )
-                    Toast.makeText(activity, "Login OK!", Toast.LENGTH_LONG).show()
+                onClick = {
+                    Firebase.auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(activity!!) { task ->
+                        if (task.isSuccessful) {
+                            activity.startActivity(
+                                Intent(activity, IndexPageOng::class.java).setFlags(
+                                    FLAG_ACTIVITY_SINGLE_TOP
+                                )
+                            )
+                            Toast.makeText(activity, "Login OK!", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(activity, "Login FALHOU!", Toast.LENGTH_LONG).show()
+                        }
+                    }
                 },
-                enabled = login.isNotEmpty() && password.isNotEmpty()
+                enabled = email.isNotEmpty() && password.isNotEmpty()
             ) {
                 Text("Login")
             }
@@ -107,7 +121,7 @@ fun LoginOngPage(modifier: Modifier = Modifier) {
                 onClick = {
                     activity?.startActivity(
                         Intent(activity, RegistroOng::class.java).setFlags(
-                            FLAG_ACTIVITY_SINGLE_TOP
+                            FLAG_ACTIVITY_NO_HISTORY
                         )
                     )
                 }
@@ -115,8 +129,8 @@ fun LoginOngPage(modifier: Modifier = Modifier) {
                 Text("Registre-se")
             }
             Button(
-                onClick = { login = ""; password = "" },
-                enabled = login.isNotEmpty() && password.isNotEmpty()
+                onClick = { email = ""; password = "" },
+                enabled = email.isNotEmpty() && password.isNotEmpty()
             ) {
                 Text("Limpar")
             }

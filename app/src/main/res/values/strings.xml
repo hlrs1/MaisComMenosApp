@@ -11,4 +11,7 @@
     <string name="title_activity_main2">MainActivity2</string>
     <string name="title_activity_home_page">HomePage</string>
     <string name="title_activity_index_page_mercadinho">IndexPageMercadinho</string>
+    <string name="title_activity_index_ong">IndexOng</string>
+    <string name="title_activity_index_page_ong">IndexPageOng</string>
+    <string name="title_activity_perfil_ong">PerfilOng</string>
 </resources>

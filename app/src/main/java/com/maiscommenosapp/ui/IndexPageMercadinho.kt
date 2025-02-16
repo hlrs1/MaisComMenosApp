@@ -5,9 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
@@ -23,7 +28,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.maiscommenosapp.model.MainViewModel
@@ -31,6 +38,15 @@ import com.maiscommenosapp.ui.nav.BottomNavBar
 import com.maiscommenosapp.ui.nav.BottomNavItem
 import com.maiscommenosapp.ui.nav.MainNavHost
 import com.maiscommenosapp.ui.ui.theme.MaisComMenosAppTheme
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.maiscommenosapp.R
+import com.maiscommenosapp.db.fb.FBDatabase
+import com.maiscommenosapp.model.MainViewModelFactory
+
 
 class IndexPageMercadinho : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -38,24 +54,32 @@ class IndexPageMercadinho : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel : MainViewModel by viewModels()
+            val fbDB = remember { FBDatabase() }
+            val viewModel : MainViewModel = viewModel(
+                factory = MainViewModelFactory(fbDB)
+            )
             val navController = rememberNavController()
             var showDialog by remember { mutableStateOf(false) }
             MaisComMenosAppTheme {
                 if (showDialog) ProdutoDialog(
                     onDismiss = { showDialog = false },
-                    onConfirm = { produto ->
-                        if (produto.isNotBlank()) viewModel.addProduto(produto)
+                    onConfirm = { nome, quantidade, preco ->
+                        if (nome.isNotBlank()&&quantidade>0&&preco >0)
+                            viewModel.add(nome, quantidade, preco)
                         showDialog = false
                     })
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                            title = { Text("Bem-vindo(a) Mercadinho!") },
+                            title = {
+                                val name = viewModel.user?.name?:"[não logado]"
+                                Text("Bem-vindo(a)! $name")
+                            },
 
                             actions = {
 
-                                IconButton( onClick = { finish() } ) {
+                                IconButton( onClick = { Firebase.auth.signOut()
+                                    finish() } ) {
                                     Icon(
                                         imageVector =
                                             Icons.AutoMirrored.Filled.ExitToApp,
@@ -69,8 +93,8 @@ class IndexPageMercadinho : ComponentActivity() {
                     bottomBar = {
                         val items = listOf(
                             BottomNavItem.HomeButton,
-                            BottomNavItem.ListButton,
-                            BottomNavItem.MapButton,
+                            BottomNavItem.PerfilMercadinho,
+                            BottomNavItem.ProdutoButton,
 
                             )
 
@@ -85,13 +109,32 @@ class IndexPageMercadinho : ComponentActivity() {
                         }
                     }
                 ) { innerPadding ->
+                    GreetingImage("hello", from = "Me")
                     Box(modifier = Modifier.padding(innerPadding)) {
                         MainNavHost(navController = navController, viewModel = viewModel)
                     }
 
+
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingImage(message: String, from: String, modifier: Modifier = Modifier) {
+    val image = painterResource(R.drawable.index)
+    Column(
+        modifier = modifier.padding(0.dp).fillMaxSize()
+        .background(colorResource(id = R.color.teal_700))
+        .wrapContentSize(Alignment.Center),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,) {
+        Image(
+            painter = image,
+            contentDescription = null
+        )
     }
 }
 

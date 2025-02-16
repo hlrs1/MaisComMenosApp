@@ -34,6 +34,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.maiscommenosapp.db.fb.FBDatabase
+import com.maiscommenosapp.model.User
 import com.maiscommenosapp.ui.theme.MaisComMenosAppTheme
 
 class RegistroOng : ComponentActivity() {
@@ -58,7 +62,7 @@ fun RegisterOngPage(modifier: Modifier = Modifier) {
 
     var nome by rememberSaveable { mutableStateOf("") }
     Spacer(modifier = modifier.size(24.dp))
-    var login by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
     Spacer(modifier = modifier.size(24.dp))
     var telefone by rememberSaveable { mutableStateOf("") }
     Spacer(modifier = modifier.size(24.dp))
@@ -88,10 +92,10 @@ fun RegisterOngPage(modifier: Modifier = Modifier) {
             onValueChange = { nome = it }
         )
         OutlinedTextField(
-            value = login,
-            label = { Text(text = "Digite seu login") },
+            value = email,
+            label = { Text(text = "Digite seu email") },
             modifier = modifier.fillMaxWidth(),
-            onValueChange = { login = it }
+            onValueChange = { email = it }
         )
         OutlinedTextField(
             value = telefone,
@@ -122,21 +126,29 @@ fun RegisterOngPage(modifier: Modifier = Modifier) {
         Row(modifier = modifier) {
             Button(
                 onClick = {
-                    Toast.makeText(activity, "ONG Registrada!", Toast.LENGTH_LONG).show()
-                    activity?.startActivity(
-                        Intent(activity, LoginOng::class.java).setFlags(
-                            FLAG_ACTIVITY_SINGLE_TOP
-                        )
-                    )
+                    Firebase.auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(activity!!) { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(activity,"Registro OK!", Toast.LENGTH_LONG).show()
+                                FBDatabase().register(User(nome, email))
+                                activity.startActivity(
+                                    Intent(activity, MainActivity::class.java).setFlags(
+                                        FLAG_ACTIVITY_SINGLE_TOP )
+                                )
+                            } else {
+                                Toast.makeText(activity,
+                                    "Registro FALHOU!", Toast.LENGTH_LONG).show()
+                            }
+                        }
                 },
-                enabled = nome.isNotEmpty() && telefone.isNotEmpty()&& login.isNotEmpty()&& endereco.isNotEmpty() && password.isNotEmpty() && confirmacao.isNotEmpty()
+                enabled = nome.isNotEmpty() && telefone.isNotEmpty()&& email.isNotEmpty()&& endereco.isNotEmpty() && password.isNotEmpty() && confirmacao.isNotEmpty()
                         && (password == confirmacao)
             ) {
                 Text("Registrar")
             }
             Spacer(modifier = modifier.size(24.dp))
             Button(
-                onClick = { login = ""; password = ""; confirmacao = ""; nome = ""; telefone = ""; endereco = ""}
+                onClick = { email = ""; password = ""; confirmacao = ""; nome = ""; telefone = ""; endereco = ""}
             ) {
                 Text("Limpar")
             }

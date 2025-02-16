@@ -27,7 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.maiscommenosapp.db.fb.FBDatabase
 import com.maiscommenosapp.model.MainViewModel
+import com.maiscommenosapp.model.MainViewModelFactory
 import com.maiscommenosapp.ui.nav.BottomNavBar
 import com.maiscommenosapp.ui.nav.BottomNavItem
 import com.maiscommenosapp.ui.nav.MainNavHost
@@ -39,24 +43,29 @@ class IndexPageOng : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel : MainViewModel by viewModels()
+            val fbDB = remember { FBDatabase() }
+            val viewModel : MainViewModel = viewModel(
+                factory = MainViewModelFactory(fbDB)
+            )
             val navController = rememberNavController()
             var showDialog by remember { mutableStateOf(false) }
             MaisComMenosAppTheme {
                 if (showDialog) ProdutoDialog(
                     onDismiss = { showDialog = false },
-                    onConfirm = { produto ->
-                        if (produto.isNotBlank()) viewModel.addProduto(produto)
+                    onConfirm = { nome, quantidade, preco ->
+                        if (nome.isNotBlank()&&quantidade<0&&preco>0)
+                            viewModel.add(nome, quantidade, preco)
                         showDialog = false
                     })
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                            title = { Text("Bem-vindo(a) ONG!") },
+                            title = { Text("Bem-vindo(a) Ong!") },
 
                             actions = {
 
-                                IconButton( onClick = { finish() } ) {
+                                IconButton( onClick = { Firebase.auth.signOut()
+                                    finish() } ) {
                                     Icon(
                                         imageVector =
                                             Icons.AutoMirrored.Filled.ExitToApp,
@@ -69,9 +78,9 @@ class IndexPageOng : ComponentActivity() {
 
                     bottomBar = {
                         val items = listOf(
+                            BottomNavItem.ProdutoButton,
+                            BottomNavItem.PerfilOng,
                             BottomNavItem.HomeButton,
-                            BottomNavItem.ListButton,
-                            BottomNavItem.MapButton,
 
                             )
 
@@ -79,20 +88,25 @@ class IndexPageOng : ComponentActivity() {
 
                     },
 
-                    floatingActionButton = {
+                    /*floatingActionButton = {
 
-                        FloatingActionButton(onClick = { }) {
+                        FloatingActionButton(onClick = { showDialog = true }) {
                             Icon(Icons.Default.Add, contentDescription = "Adicionar")
                         }
-                    }
+                    }*/
                 ) { innerPadding ->
+                    GreetingImage("hello", from = "Me")
                     Box(modifier = Modifier.padding(innerPadding)) {
                         MainNavHost(navController = navController, viewModel = viewModel)
                     }
+                    ProdutosPage(
+                        modifier = Modifier,
+                        viewModel = viewModel
+                    )
+
 
                 }
             }
         }
     }
 }
-
