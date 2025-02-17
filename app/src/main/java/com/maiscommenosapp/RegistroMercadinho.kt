@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.maiscommenosapp.db.fb.FBDatabase
+import com.maiscommenosapp.model.Mercadinho
 import com.maiscommenosapp.model.User
 import com.maiscommenosapp.ui.theme.MaisComMenosAppTheme
 
@@ -131,7 +132,7 @@ fun RegisterMercadinhoPage(modifier: Modifier = Modifier) {
                         .addOnCompleteListener(activity!!) { task ->
                             if (task.isSuccessful) {
                                 Toast.makeText(activity,"Registro OK!", Toast.LENGTH_LONG).show()
-                                FBDatabase().register(User(nome, email))
+                                FBDatabase().register(Mercadinho(nome, email, cnpj = cnpj, status = "", endereco = endereco, telefone = telefone, validade = ""))
                                 activity.startActivity(
                                     Intent(activity, MainActivity::class.java).setFlags(
                                         FLAG_ACTIVITY_SINGLE_TOP )

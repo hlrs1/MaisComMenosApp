@@ -21,6 +21,10 @@ class MainViewModel  (private val db: FBDatabase): ViewModel(),
     val user : User?
         get() = _user.value
 
+    private val _mercadinho = mutableStateOf<Mercadinho?> (null)
+    val mercadinho : Mercadinho?
+        get() = _mercadinho.value
+
     /*fun addProduto(name: String) {
         _produtos.add(Produto(name = name))
     }*/
@@ -44,6 +48,10 @@ class MainViewModel  (private val db: FBDatabase): ViewModel(),
 
     override fun onUserLoaded(user: User) {
         _user.value = user
+    }
+
+    override fun onMercadinhoLoaded(mercadinho: Mercadinho) {
+        _mercadinho.value = mercadinho
     }
 
     override fun onPedidoAdded(pedido: Pedido) {
