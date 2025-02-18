@@ -25,13 +25,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import java.util.Date
 
 
 @Composable
-fun ProdutoDialog(onDismiss: () -> Unit, onConfirm: (nome: String, quantidade: Int, preco: Double) -> Unit) {
+fun ProdutoDialog(onDismiss: () -> Unit, onConfirm: (nome: String, quantidade: Int, preco: Double, validade: Date) -> Unit) {
     val produtoName = remember { mutableStateOf("") }
     val produtoQuantidade = remember { mutableIntStateOf(0) }
     val produtoPreco = remember { mutableDoubleStateOf(0.0) }
+    val produtoValidade = remember { mutableStateOf(false) }
     Dialog(onDismissRequest = { onDismiss() } ) {
         Surface( shape = RoundedCornerShape(16.dp) ) {
             Column(modifier = Modifier.padding(20.dp)) {
@@ -65,7 +67,7 @@ fun ProdutoDialog(onDismiss: () -> Unit, onConfirm: (nome: String, quantidade: I
                     onValueChange = { produtoPreco.doubleValue = it.toDouble() })
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    onClick = { onConfirm(produtoName.value, produtoQuantidade.intValue, produtoPreco.doubleValue) },
+                    onClick = { onConfirm(produtoName.value, produtoQuantidade.intValue, produtoPreco.doubleValue, Date()) },
                     modifier = Modifier.fillMaxWidth().height(50.dp)
                 ) { Text(text = "OK") }
             }

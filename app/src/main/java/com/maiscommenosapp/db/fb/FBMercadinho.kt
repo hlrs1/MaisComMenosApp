@@ -8,9 +8,8 @@ class FBMercadinho {
     var cnpj : String? = null
     var telefone : String? = null
     var endereco : String? = null
-    var status : String? = null
-    var validade : String? = null
-    fun toMercadinho() = Mercadinho(name!!, email!!, status!!, validade!!, cnpj!!, endereco!!, telefone!!)
+    var tipo : String? = null
+    fun toMercadinho() = Mercadinho(name!!, email!!, tipo!!, cnpj!!, endereco!!, telefone!!)
 }
 fun Mercadinho.toFBMercadinho() : FBMercadinho {
     val fbMercadinho= FBMercadinho()
@@ -18,8 +17,7 @@ fun Mercadinho.toFBMercadinho() : FBMercadinho {
     fbMercadinho.email = this.email
     fbMercadinho.cnpj = this.cnpj
     fbMercadinho.endereco = this.endereco
-    fbMercadinho.status = this.status
-    fbMercadinho.validade = this.validade
+    fbMercadinho.tipo = this.tipo
     fbMercadinho.telefone = this.telefone
 
     return fbMercadinho

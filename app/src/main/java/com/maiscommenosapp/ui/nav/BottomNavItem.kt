@@ -16,7 +16,9 @@ sealed interface Route {
     @Serializable
     data object PerfilMercadinho : Route
     @Serializable
-    data object Produtos : Route
+    data object ProdutosButton : Route
+    @Serializable
+    data object OfertasButton : Route
 }
 sealed class BottomNavItem(
     var title: String,
@@ -30,6 +32,9 @@ sealed class BottomNavItem(
         BottomNavItem("Perfil", Icons.Default.Person, Route.PerfilOng)
     data object PerfilMercadinho :
         BottomNavItem("Perfil", Icons.Default.Person, Route.PerfilMercadinho)
-    data object ProdutoButton:
-        BottomNavItem("Produtos", Icons.Default.List, Route.Produtos)
+    data object ProdutosButton :
+        BottomNavItem("Produtos", Icons.Default.Person, Route.ProdutosButton)
+    data object OfertasButton :
+        BottomNavItem("Ofertas", Icons.Default.Person, Route.OfertasButton)
+
 }

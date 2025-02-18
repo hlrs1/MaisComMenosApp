@@ -63,16 +63,16 @@ class IndexPageMercadinho : ComponentActivity() {
             MaisComMenosAppTheme {
                 if (showDialog) ProdutoDialog(
                     onDismiss = { showDialog = false },
-                    onConfirm = { nome, quantidade, preco ->
+                    onConfirm = { nome, quantidade, preco, validade ->
                         if (nome.isNotBlank()&&quantidade>0&&preco >0)
-                            viewModel.add(nome, quantidade, preco)
+                            viewModel.add(nome, quantidade, preco, validade)
                         showDialog = false
                     })
                 Scaffold(
                     topBar = {
                         TopAppBar(
                             title = {
-                                val name = viewModel.user?.name?:"[não logado]"
+                                val name = viewModel.mercadinho?.name?:"[não logado]"
                                 Text("Bem-vindo(a)! $name")
                             },
 
@@ -94,7 +94,6 @@ class IndexPageMercadinho : ComponentActivity() {
                         val items = listOf(
                             BottomNavItem.HomeButton,
                             BottomNavItem.PerfilMercadinho,
-                            BottomNavItem.ProdutoButton,
 
                             )
 
@@ -109,7 +108,7 @@ class IndexPageMercadinho : ComponentActivity() {
                         }
                     }
                 ) { innerPadding ->
-                    GreetingImage("hello", from = "Me")
+                    GreetingImage( imageName = "")
                     Box(modifier = Modifier.padding(innerPadding)) {
                         MainNavHost(navController = navController, viewModel = viewModel)
                     }
@@ -123,8 +122,18 @@ class IndexPageMercadinho : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingImage(message: String, from: String, modifier: Modifier = Modifier) {
-    val image = painterResource(R.drawable.index)
+fun GreetingImage(imageName: String, modifier: Modifier = Modifier) {
+    var image = painterResource(R.drawable.index)
+
+    if(imageName.equals("perfilmercadinho")) {
+        image = painterResource(R.drawable.perfilmercadinho)
+    }
+    else if(imageName.equals("perfilong")) {
+        image = painterResource(R.drawable.perfilong)
+    }
+    else if(imageName.equals("meus_produtos")) {
+        image = painterResource(R.drawable.meus_produtos)
+    }
     Column(
         modifier = modifier.padding(0.dp).fillMaxSize()
         .background(colorResource(id = R.color.teal_700))

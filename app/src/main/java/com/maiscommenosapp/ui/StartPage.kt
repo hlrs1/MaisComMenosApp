@@ -35,7 +35,7 @@ fun StartPage(modifier: Modifier = Modifier) {
     val activity = LocalContext.current as? Activity
     Column(
         modifier = modifier.padding(0.dp).fillMaxSize()
-            .background(colorResource(id = R.color.teal_700))
+            .background(Color(160,200,180))
             .wrapContentSize(Alignment.Center),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import com.maiscommenosapp.ui.GreetingImage
 import com.maiscommenosapp.ui.StartPage
 import com.maiscommenosapp.ui.theme.MaisComMenosAppTheme
 
@@ -22,7 +23,9 @@ class MainActivity : ComponentActivity() {
             //val navController = rememberNavController()
             MaisComMenosAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
+                    GreetingImage("")
                     StartPage()
+
 }
             }
         }

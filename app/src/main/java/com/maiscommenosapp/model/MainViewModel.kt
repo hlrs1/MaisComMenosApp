@@ -6,6 +6,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.maiscommenosapp.db.fb.FBDatabase
+import java.util.Date
 
 class MainViewModel  (private val db: FBDatabase): ViewModel(),
     FBDatabase.Listener {
@@ -17,13 +18,17 @@ class MainViewModel  (private val db: FBDatabase): ViewModel(),
     val produtos : List<Produto>
         get() = _produtos.values.toList()
 
-    private val _user = mutableStateOf<User?> (null)
+    /*private val _user = mutableStateOf<User?> (null)
     val user : User?
-        get() = _user.value
+        get() = _user.value*/
 
     private val _mercadinho = mutableStateOf<Mercadinho?> (null)
     val mercadinho : Mercadinho?
         get() = _mercadinho.value
+
+    private val _ong = mutableStateOf<Ong?> (null)
+    val ong : Ong?
+        get() = _ong.value
 
     /*fun addProduto(name: String) {
         _produtos.add(Produto(name = name))
@@ -42,13 +47,18 @@ class MainViewModel  (private val db: FBDatabase): ViewModel(),
     fun remove(produto: Produto) {
         db.removeProduto(produto)
     }
-    fun add(name: String, quantidade: Int, preco: Double) {
-        db.addProduto(Produto(name = name, quantidade = quantidade, preco = preco))
+    fun add(name: String, quantidade: Int, preco: Double, validade : Date) {
+        db.addProduto(Produto(name = name, quantidade = quantidade, preco = preco, validade ))
     }
 
-    override fun onUserLoaded(user: User) {
+   /* override fun onUserLoaded(user: User) {
         _user.value = user
+    }*/
+
+    override fun onOngLoaded(ong: Ong) {
+        _ong.value = ong
     }
+
 
     override fun onMercadinhoLoaded(mercadinho: Mercadinho) {
         _mercadinho.value = mercadinho
@@ -94,5 +104,5 @@ private fun getPedido() = List(20) { i ->
 }
 
 private fun getProduto() = List(20) { i ->
-    Produto(name = "Arroz $i", quantidade = 10, preco = 18.00)
+    Produto(name = "Arroz $i", quantidade = 10, preco = 18.00, validade = Date())
 }

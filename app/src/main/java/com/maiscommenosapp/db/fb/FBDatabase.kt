@@ -6,14 +6,15 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
 import com.maiscommenosapp.model.Mercadinho
+import com.maiscommenosapp.model.Ong
 import com.maiscommenosapp.model.Pedido
 import com.maiscommenosapp.model.Produto
 import com.maiscommenosapp.model.User
 
 class FBDatabase {
     interface Listener {
-        fun onUserLoaded(user: User)
         fun onMercadinhoLoaded(mercadinho: Mercadinho)
+        fun onOngLoaded(ong: Ong)
         fun onProdutoAdded(produto: Produto)
         fun onProdutoUpdated(produto: Produto)
         fun onProdutoRemoved(produto: Produto)
@@ -32,13 +33,13 @@ class FBDatabase {
                 produtosListReg?.remove()
                 return@addAuthStateListener
             }
-            val refCurrUser = db.collection("users")
+            /*val refCurrUser = db.collection("users")
                 .document(auth.currentUser!!.uid)
             refCurrUser.get().addOnSuccessListener {
                 it.toObject(FBUser::class.java)?.let { user ->
                     listener?.onUserLoaded(user.toUser())
                 }
-            }
+            }*/
 
             val refCurrMercadinho = db.collection("mercadinhos")
                 .document(auth.currentUser!!.uid)
@@ -47,7 +48,15 @@ class FBDatabase {
                     listener?.onMercadinhoLoaded(mercadinho.toMercadinho())
                 }
             }
-            produtosListReg = refCurrUser.collection("produtos")
+
+            val refCurrOng = db.collection("ongs")
+                .document(auth.currentUser!!.uid)
+            refCurrOng.get().addOnSuccessListener {
+                it.toObject(FBOng::class.java)?.let { ong ->
+                    listener?.onOngLoaded(ong.toOng())
+                }
+            }
+            produtosListReg = refCurrMercadinho.collection("produtos")
                 .addSnapshotListener { snapshots, ex ->
                     if (ex != null) return@addSnapshotListener
                     snapshots?.documentChanges?.forEach { change ->
@@ -71,7 +80,7 @@ class FBDatabase {
                         }
                     }
                 }
-            pedidosListReg = refCurrUser.collection("pedidos")
+            pedidosListReg = refCurrOng.collection("pedidos")
                 .addSnapshotListener { snapshots, ex ->
                     if (ex != null) return@addSnapshotListener
                     snapshots?.documentChanges?.forEach { change ->
@@ -101,11 +110,11 @@ class FBDatabase {
     fun setListener(listener: Listener? = null) {
         this.listener = listener
     }
-    fun register(user: User) {
+    fun register(ong: Ong) {
         if (auth.currentUser == null)
             throw RuntimeException("User not logged in!")
         val uid = auth.currentUser!!.uid
-        db.collection("users").document(uid + "").set(user.toFBUser());
+        db.collection("ongs").document(uid + "").set(ong.toFBOng());
     }
     fun register(mercadinho: Mercadinho) {
         if (auth.currentUser == null)
@@ -117,14 +126,14 @@ class FBDatabase {
         if (auth.currentUser == null)
             throw RuntimeException("User not logged in!")
         val uid = auth.currentUser!!.uid
-        db.collection("users").document(uid).collection("produtos")
+        db.collection("mercadinhos").document(uid).collection("produtos")
             .document(produto.name).set(produto.toFBProduto())
     }
 
     fun removeProduto(produto: Produto) {if (auth.currentUser == null)
         throw RuntimeException("User not logged in!")
         val uid = auth.currentUser!!.uid
-        db.collection("users").document(uid).collection("produtos")
+        db.collection("mercadinhos").document(uid).collection("produtos")
             .document(produto.name).delete()
     }
     fun addPedido(pedido: Pedido) {

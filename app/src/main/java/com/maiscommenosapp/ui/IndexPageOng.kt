@@ -4,27 +4,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.Firebase
@@ -52,15 +46,17 @@ class IndexPageOng : ComponentActivity() {
             MaisComMenosAppTheme {
                 if (showDialog) ProdutoDialog(
                     onDismiss = { showDialog = false },
-                    onConfirm = { nome, quantidade, preco ->
+                    onConfirm = { nome, quantidade, preco, validade ->
                         if (nome.isNotBlank()&&quantidade<0&&preco>0)
-                            viewModel.add(nome, quantidade, preco)
+                            viewModel.add(nome, quantidade, preco, validade)
                         showDialog = false
                     })
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                            title = { Text("Bem-vindo(a) Ong!") },
+                            title = {
+                                val name = viewModel.ong?.name?:"[não logado]"
+                                Text("Bem-vindo(a)! $name") },
 
                             actions = {
 
@@ -78,9 +74,8 @@ class IndexPageOng : ComponentActivity() {
 
                     bottomBar = {
                         val items = listOf(
-                            BottomNavItem.ProdutoButton,
-                            BottomNavItem.PerfilOng,
                             BottomNavItem.HomeButton,
+                            BottomNavItem.PerfilOng,
 
                             )
 
@@ -95,7 +90,7 @@ class IndexPageOng : ComponentActivity() {
                         }
                     }*/
                 ) { innerPadding ->
-                    GreetingImage("hello", from = "Me")
+                    //GreetingImage("")
                     Box(modifier = Modifier.padding(innerPadding)) {
                         MainNavHost(navController = navController, viewModel = viewModel)
                     }

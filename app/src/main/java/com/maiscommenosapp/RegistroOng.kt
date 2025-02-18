@@ -18,10 +18,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,16 +43,46 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.maiscommenosapp.db.fb.FBDatabase
+import com.maiscommenosapp.model.Ong
 import com.maiscommenosapp.model.User
 import com.maiscommenosapp.ui.theme.MaisComMenosAppTheme
 
 class RegistroOng : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MaisComMenosAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    topBar = {
+                        val activity = LocalContext.current as? Activity
+                        TopAppBar(
+                            title = {
+                                Text("Registro Ong")
+                            },
+
+                            actions = {
+
+                                IconButton( onClick = {
+                                    if (activity != null) {
+                                        activity.startActivity(
+                                            Intent(activity, LoginOng::class.java).setFlags(
+                                                FLAG_ACTIVITY_SINGLE_TOP
+                                            )
+                                        )
+                                    }
+                                } ) {
+                                    Icon(
+                                        imageVector =
+                                            Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Localized description"
+                                    )
+                                }
+                            }
+                        )
+                    },
+                    modifier = Modifier.fillMaxSize()) { innerPadding ->
                     RegisterOngPage(
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -130,7 +166,7 @@ fun RegisterOngPage(modifier: Modifier = Modifier) {
                         .addOnCompleteListener(activity!!) { task ->
                             if (task.isSuccessful) {
                                 Toast.makeText(activity,"Registro OK!", Toast.LENGTH_LONG).show()
-                                FBDatabase().register(User(nome, email))
+                                FBDatabase().register(Ong(name = nome, email = email, tipo = "O", endereco = endereco, telefone = telefone))
                                 activity.startActivity(
                                     Intent(activity, MainActivity::class.java).setFlags(
                                         FLAG_ACTIVITY_SINGLE_TOP )

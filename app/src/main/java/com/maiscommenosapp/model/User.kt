@@ -1,3 +1,9 @@
 package com.maiscommenosapp.model
 
-data class User(val name: String, val email: String)
+open class User(
+    open val name: String,
+    open val email: String,
+    open val tipo: String,
+    open val endereco : String,
+    open val telefone: String
+)

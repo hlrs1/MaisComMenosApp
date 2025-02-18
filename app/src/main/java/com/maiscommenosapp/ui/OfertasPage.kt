@@ -29,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,8 +40,8 @@ import com.maiscommenosapp.model.Produto
 
 @Preview(showBackground = true)
 @Composable
-fun ProdutosPage(modifier: Modifier = Modifier, viewModel: MainViewModel) {
-    GreetingImage("meus_produtos")
+fun OfertasPage(modifier: Modifier = Modifier, viewModel: MainViewModel) {
+    //GreetingImage("meus_produtos")
     val produtoList = viewModel.produtos
     val activity = LocalContext.current as? Activity
     LazyColumn(
@@ -48,19 +50,27 @@ fun ProdutosPage(modifier: Modifier = Modifier, viewModel: MainViewModel) {
             .padding(8.dp)
     ) {
         items(produtoList) { produto ->
-            ProdutoItem(produto =  produto, onClose = { viewModel.remove(produto)
+            ProdutoItem1(produto =  produto, onClose = { viewModel.remove(produto)
                 Toast.makeText(activity, "Fechou!", Toast.LENGTH_LONG).show()
             }, onClick = {
 /* TO DO */Toast.makeText(activity, "Clicou!", Toast.LENGTH_LONG).show()
             })
         }
+
     }
+    Column { Text(
+        text = "Bem-vindo ao MaisComMenosApp!",
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,color = Color.White,
+        modifier = Modifier.align(Alignment.CenterHorizontally),
+        textAlign = TextAlign.Center,
+    ) }
 }
 
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun ProdutoItem(
+fun ProdutoItem1(
     produto: Produto,
     onClick: () -> Unit,
     onClose: () -> Unit,
@@ -96,7 +106,7 @@ fun ProdutoItem(
 
     }
     Row(modifier = modifier.fillMaxWidth().background(Color(0,0,0,0)).padding(8.dp).clickable { onClick() },
-    verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ){
     }
 }
